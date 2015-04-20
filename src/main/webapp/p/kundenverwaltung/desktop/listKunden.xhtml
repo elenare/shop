@@ -1,0 +1,181 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body jsf:id="body">
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgKv['listKunden.title']}"/>
+        
+            <ui:define name="main">
+                <section id="sucheSection">
+                    <form jsf:id="form" jsf:prependId="false">
+                        <p:focus id="sucheFocus" for="nachname"/>
+
+                        <p:fieldset id="suchePanel" legend="#{msgKv['listKunden.sucheNeu']}">
+                            <p:panelGrid id="sucheGrid" columns="4" styleClass="s-grid-noborder">
+                                <p:outputLabel id="nachnameLabel" value="#{msgKv['listKunden.nachname']}"/>
+
+                                <p:autoComplete id="nachname"
+                                                value="#{listKundenModel.nachname}"
+                                                minQueryLength="1"
+                                                completeMethod="#{listKundenModel.findNachnamenByPrefix}"
+                                                emptyMessage="#{msgKv['listKunden.keineKunden']}"> 
+                                    <!-- Validierung durch Javascript mit PrimeFaces -->
+                                    <!--
+                                    <p:clientValidator/>
+                                    -->
+                                </p:autoComplete>
+
+                                <p:commandButton id="sucheButton"
+                                                 actionListener="#{listKundenModel.findKundenByNachname}"
+                                                 value="#{msgKv['listKunden.submit']}"
+                                                 icon="fa fa-search"
+                                                 update=":kundenPanel fehlermeldungNachname"/>
+                                <ez:waiting id="inBearbeitung" msg="#{msgKv['listKunden.inBearbeitung']}"/>
+                            </p:panelGrid>
+
+                            <p:message id="fehlermeldungNachname" for="nachname"/>
+                        </p:fieldset>
+                    </form>
+                </section>
+        
+                <p:spacer id="abstand" height="20"/>
+
+                <p:messages id="globaleFehlermeldungen" globalOnly="true"/>
+                
+                <p:outputPanel id="kundenPanel">
+                    <section id="kundenSection">
+                        <form jsf:id="kundenForm" jsf:prependId="false">
+                            <p:dataTable id="kundenTabelle"
+                                         value="#{listKundenModel.kunden}"
+                                         var="kunde"
+                                         rows="5"
+                                         paginator="true"
+                                         paginatorPosition="bottom"
+                                         paginatorAlwaysVisible="false"
+                                         selection="#{listKundenModel.selectedKunde}"
+                                         selectionMode="single"
+                                         rowKey="#{kunde.id}"
+                                         emptyMessage="#{msgKv['listKunden.keineKunden']}"
+                                         rendered="#{not empty listKundenModel.kunden or param.init ne 'true'}">
+
+                                <!-- filterMatchMode: startsWith (default), endsWith, contains, exact, lt, lte, gt, gte, equals -->
+                                <p:column id="idSpalte" headerText="#{msgKv['listKunden.kundenr']}"
+                                          sortBy="#{kunde.id}" filterBy="#{kunde.id}">
+                                    <!-- h:outputText fuer den Export nach Excel und PDF -->
+                                    <h:outputText id="idTxt" value="#{kunde.id}"/>
+                                </p:column>
+
+                                <p:column id="nachnameSpalte" headerText="#{msgKv['listKunden.nachname']}">
+                                    <h:outputText id="nachnameTxt" value="#{kunde.identity.nachname}"/>
+                                </p:column>
+
+                                <p:column id="vornameSpalte" headerText="#{msgKv['listKunden.vorname']}"
+                                          sortBy="#{kunde.identity.vorname}" filterBy="#{kunde.identity.vorname}">
+                                    <h:outputText id="vornameTxt" value="#{kunde.identity.vorname}"/>
+                                </p:column>
+
+                                <p:column id="buttons" exportable="false" rendered="#{not empty listKundenModel.kunden}">
+                                    <p:commandButton id="detailsButton" update=":kundeDetail" oncomplete="PF('popup').show()"
+                                                     icon="fa fa-search-plus" title="#{msgKv['listKunden.detailsButtonAlt']}" alt="#{msgKv['listKunden.detailsButtonAlt']}">
+                                        <!-- direkt das Attribut im Backing Bean setzen -->
+                                        <f:setPropertyActionListener target="#{listKundenModel.selectedKunde}" value="#{kunde}"/>
+                                    </p:commandButton>
+                                    #{' '}
+                                    <p:commandButton id="editButton" action="#{updateKundeModel.load(kunde.id, 'listKunden')}"
+                                                     icon="fa fa-edit" title="#{msgKv['listKunden.editButtonAlt']}" alt="#{msgKv['listKunden.editButtonAlt']}"/>
+                                    #{' '}
+                                    <p:commandButton id="deleteButton"
+                                                     icon="fa fa-remove" title="#{msgKv['listKunden.deleteButtonAlt']}" alt="#{msgKv['listKunden.deleteButtonAlt']}"
+                                                     onclick="PF('cd').show()"
+                                                     rendered="#{rollenModel.isInRole('admin')}">
+                                        <f:setPropertyActionListener target="#{listKundenModel.selectedKunde}" value="#{kunde}"/>
+                                    </p:commandButton>
+                                </p:column>
+                                
+                                <f:facet name="footer">
+                                    <p:commandButton id="xlsExporterButton" value="#{msgKv['listKunden.xls']}"
+                                                     ajax="false" icon="fa fa-file-excel-o">
+                                        <p:dataExporter id="xlsExporter" type="xls" target="kundenTabelle" fileName="#{msgKv['listKunden.filename']}"/>
+                                    </p:commandButton>
+                                    #{' '}
+                                    <p:commandButton id="pdfExporterButton" value="#{msgKv['listKunden.pdf']}"
+                                                     ajax="false" icon="fa fa-file-pdf-o">
+                                        <p:dataExporter id="pdfExporter" type="pdf" preProcessor="#{preProcessPDF.addLogo}"
+                                                        target="kundenTabelle" fileName="#{msgKv['listKunden.filename']}"/>
+                                    </p:commandButton>
+                                </f:facet>
+                            </p:dataTable>
+                                    
+                            <p:confirmDialog id="confirmDialog" message="#{msgKv['listKunden.deleteKundeBestaetigung']}"
+                                             header="#{msgKv['listKunden.deleteKundeAlert']}"
+                                             severity="alert"
+                                             widgetVar="cd">
+                                <p:commandButton id="confirmDeleteButton"
+                                                 action="#{deleteKundeModel.delete(listKundenModel.selectedKunde)}"
+                                                 value="#{msgKv['listKunden.deleteButtonAlt']}"
+                                                 ajax="false"
+                                                 onclick="PF('cd').hide()"
+                                                 icon="fa fa-trash-o"/>
+                                <p:commandButton id="cancelDeleteButton"
+                                                 value="#{msgKv['listKunden.deleteCancel']}"
+                                                 update=":globaleFehlermeldungen"
+                                                 onclick="PF('cd').hide()"
+                                                 icon="fa fa-minus-circle"/>
+                            </p:confirmDialog>
+
+                            <!-- Effekte: blind, bounce, clip, drop, explode, fade, fold, highlight, puff, pulsate, scale, shake, size, slide, transfer -->
+                            <p:dialog id="popup" header="#{msgKv['viewKundePopup.title']}" widgetVar="popup" minimizable="true" resizeable="false" showEffect="fade" hideEffect="fade">
+                                <p:outputPanel id="kundeDetail" style="text-align:center;">
+                                    <ui:include src="viewKundePopup.xhtml"/>
+                                    <p:link id="closeLink" value="#{msgKv['viewKundePopup.hide.button']}" onclick="PF('popup').hide()"/>
+                                </p:outputPanel>
+                            </p:dialog>
+                            
+                            <p:contextMenu id="ctxmenu" for="kundenTabelle">
+                                <p:menuitem id="detailsCtx"
+                                            value="#{msgKv['listKunden.detailsButtonAlt']}"
+                                            icon="ui-icon-search"
+                                            update=":kundeDetail"
+                                            oncomplete="PF('popup').show()"/>
+                                
+                                <p:menuitem id="updateCtx"
+                                            value="#{msgKv['listKunden.editButtonAlt']}"
+                                            icon="ui-icon-pencil"
+                                            action="#{updateKundeModel.load(listKundenModel.selectedKunde.id, 'listKunden')}"/>
+                                
+                                <p:separator id="separatorDeleteCtx" rendered="#{rollenModel.isInRole('admin')}"/>
+                                
+                                <p:menuitem id="deleteCtx"
+                                            value="#{msgKv['listKunden.deleteButtonAlt']}"
+                                            icon="ui-icon-closethick"
+                                            action="#{deleteKundeModel.delete(listKundenModel.selectedKunde)}"
+                                            rendered="#{rollenModel.isInRole('admin')}"/>
+                            </p:contextMenu>
+                        </form>
+                    </section>
+                </p:outputPanel>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

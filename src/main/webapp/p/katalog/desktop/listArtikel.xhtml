@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgAv['listArtikel.title']}"/>
+        
+            <ui:define name="main">
+                <section id="sucheSection">
+                    <form jsf:id="sucheForm" jsf:prependId="false">
+                        <p:fieldset id="suchePanel" legend="#{msgAv['listArtikel.sucheNeu']}">
+                            <p:panelGrid id="sucheGrid" columns="4" styleClass="s-grid-noborder">
+                                <p:outputLabel id="bezeichnungLabel" for="bezeichnung" value="#{msgAv['listArtikel.bezeichnung']}"/>
+
+                                <!-- Kein Placeholder wegen autofocus -->
+                                <p:inputText id="bezeichnung" pt:autofocus="true" value="#{katalogModel.bezeichnung}"/>
+
+                                <p:commandButton id="findButton"
+                                                 actionListener="#{katalogModel.findByBezeichnung}"
+                                                 value="#{msgAv['listArtikel.submit']}"
+                                                 icon="fa findButton"
+                                                 update=":artikelPanel"/>
+
+                                <ez:waiting id="inBearbeitung" msg="#{msgAv['listArtikel.inBearbeitung']}"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </form>
+                </section>
+                
+                <p:spacer id="abstand1" height="20"/>
+                
+                <p:outputPanel id="artikelPanel">
+                    <section id="artikelSection">
+                        <form jsf:id="artikelForm" jsf:prependId="false" rendered="#{not empty katalogModel.artikel}">
+                            <p:dataTable id="artikelTabelle"
+                                         value="#{katalogModel.artikel}"
+                                         var="artikel"
+                                         rows="5"
+                                         paginator="true"
+                                         paginatorPosition="bottom"
+                                         paginatorAlwaysVisible="false"
+                                         emptyMessage="#{msgAv['listArtikel.keineDaten']}"
+                                         rendered="#{param.init ne 'true'}">
+                                <p:column id="idSpalte" headerText="#{msgAv['listArtikel.id']}">
+                                    #{artikel.id}
+                                </p:column>
+
+                                <p:column id="bezeichnungSpalte" headerText="#{msgAv['listArtikel.bezeichnung']}">
+                                    #{artikel.bezeichnung}
+                                </p:column>
+
+                                <p:column id="preisSpalte" headerText="#{msgAv['listArtikel.preis']}">
+                                    <h:outputText id="preis" value="#{artikel.preis}">
+                                        <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column id="ratingSpalte" headerText="#{msgAv['listArtikel.rating']}">
+                                    <p:rating id="rating" value="#{artikel.rating}" readonly="true"/>
+                                </p:column>
+
+                                <p:column id="buttonSpalte" rendered="#{not empty katalogModel.artikel}">
+                                    <p:commandButton id="warenkorbButton" action="#{warenkorb.add(artikel)}"
+                                                     icon="fa fa-shopping-cart" ajax="false"/>
+                                </p:column>
+                            </p:dataTable>
+                
+                            <p:spacer id="abstand2" height="20"/>
+
+                            <p:tagCloud id="cloud" model="#{katalogModel.cloudModel}">
+                                <p:ajax event="select" listener="#{warenkorb.addCloud}"/>
+                            </p:tagCloud>
+                        </form>
+                    </section>
+                </p:outputPanel>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

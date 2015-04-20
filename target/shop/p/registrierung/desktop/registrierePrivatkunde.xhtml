@@ -1,0 +1,219 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:s="http://shop.de">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:define name="metadata">
+                <f:event type="preRenderView" listener="#{registrierungModel.createEmptyPrivatkunde}"/>
+            </ui:define>
+            
+            <ui:param name="pageTitle" value="#{msgKv['registrierePrivatkunde.title']}"/>
+        
+            <ui:define name="main">
+                <form jsf:id="registriereForm" jsf:prependId="false">
+                    <p:messages id="fehlermeldungGobal" globalOnly="true"/>
+                    <p:growl id="growlMessages" severity="error" life="3000"/>
+
+                    <p:panelGrid id="registriereTabelle" columns="3" styleClass="s-grid-noborder">
+                        <f:facet name="header">
+                            #{msgKv['registrierePrivatkunde.heading']}
+                        </f:facet>
+
+                        <p:outputLabel id="loginnameLabel" for="nachname" value="#{msgKv['registrierePrivatkunde.loginname']}"/>
+                        <p:inputText id="loginname" pt:autofocus="true" value="#{registrierungModel.neuerPrivatkunde.identity.loginname}">
+                            <!-- Validierung durch Javascript mit PrimeFaces -->
+                            <p:clientValidator/>
+                            <!-- Validierung durch Ajax mit JSF -->
+                            <!--
+                            <f:ajax event="blur" render="fehlermeldungenLoginname"/>
+                            -->
+                        </p:inputText>
+                        <p:messages id="fehlermeldungenLoginname" for="loginname"/>
+
+                        <p:outputLabel id="nachnameLabel" for="nachname" value="#{msgKv['registrierePrivatkunde.nachname']}"/>
+                        <p:inputText id="nachname" value="#{registrierungModel.neuerPrivatkunde.identity.nachname}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungenNachname" for="nachname"/>
+
+                        <p:outputLabel id="vornameLabel" for="vorname" value="#{msgKv['registrierePrivatkunde.vorname']}"/>
+                        <p:inputText id="vorname" value="#{registrierungModel.neuerPrivatkunde.identity.vorname}"/>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="kategorieLabel" for="kategorieSlider" value="#{msgKv['registrierePrivatkunde.kategorie']}"/>
+                        <h:panelGroup id="kategorieGroup">
+                            <h:inputHidden id="kategorie" value="#{registrierungModel.neuerPrivatkunde.kategorie}"/>
+                            <h:outputText id="sliderOutput" value="#{registrierungModel.neuerPrivatkunde.kategorie}" />
+                            <!--
+                            <h:inputText id="kategorie" value="#{registrierungModel.neuerPrivatkunde.kategorie}"/>
+                            -->
+                            <p:slider id="kategorieSlider" for="kategorie" display="sliderOutput"
+                                      minValue="0" maxValue="5"/>
+                        </h:panelGroup>
+                        <f:verbatim/>
+
+                        <!--
+                        <p:outputLabel id="seitLabel" for="seit" value="#{msgKv['registrierePrivatkunde.seit']}"/>
+                        <p:calendar id="seit"
+                                    value="#{registrierungModel.neuerPrivatkunde.seit}"
+                                    timeZone="#{s:timeZone('Europe/Berlin')}"
+                                    placeholder="#{msgKv['registrierePrivatkunde.seit.placeholder']}"
+                                    navigator="true"
+                                    showButtonPanel="true"
+                                    pattern="#{msgKv['registrierePrivatkunde.calendar.pattern']}"
+                                    locale="#{locale}"
+                                    lang="#{locale}">
+                            <p:ajax event="dateSelect" update="fehlermeldungenSeit"/>
+                        </p:calendar>
+                        <p:messages id="fehlermeldungenSeit" for="seit"/>
+                        -->
+
+                        <!-- Konvertierung in \euro oder EUR funktioniert nicht -->
+                        <!--
+                        <p:outputLabel id="umsatzLabel" for="umsatz" value="#{msgKv['registrierePrivatkunde.umsatz']}"/>
+                        <p:inputText id="umsatz" value="#{registrierungModel.neuerPrivatkunde.umsatz}" converterMessage="#{msgKv['registrierePrivatkunde.umsatz.convert']}" pt:placeholder="#{msgKv['registrierePrivatkunde.umsatz.placeholder']}">
+                            <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2"/>
+                            <f:ajax event="blur" render="fehlermeldungenUmsatz"/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungenUmsatz" for="umsatz"/>
+                        -->
+
+                        <!-- Konvertierung in % funktioniert nicht: -->
+                        <!--    Dezimalpunkt statt Dezimalkomma erforderlich -->
+                        <!--    Kein Blank zwischen Betrag und % -->
+                        <!--    aus 0.3% wird 3% -->
+                        <!--
+                        <p:outputLabel id="rabattLabel" for="rabatt" value="#{msgKv['registrierePrivatkunde.rabatt']}"/>
+                        <p:inputText id="rabatt" value="#{registrierungModel.neuerPrivatkunde.rabatt}" converterMessage="#{msgKv['registrierePrivatkunde.rabatt.convert']}" pt:placeholder="#{msgKv['registrierePrivatkunde.rabatt.placeholder']}">
+                            <f:convertNumber type="percent" maxIntegerDigits="2" maxFractionDigits="2"/>
+                            <f:ajax event="blur" render="fehlermeldungenRabatt"/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungenRabatt" for="rabatt"/>
+                        -->
+
+                        <p:outputLabel id="familienstandLabel" for="familienstand" value="#{msgKv['registrierePrivatkunde.familienstand']}"/>
+                        <p:selectOneMenu id="familienstand" value="#{registrierungModel.neuerPrivatkunde.familienstand}">
+                            <f:selectItem id="familienstandHinweis" itemValue="" itemLabel="#{msgKv['registrierePrivatkunde.familienstand']}"/>
+                            <f:selectItem id="ledig" itemValue="LEDIG" itemLabel="#{msgKv['registrierePrivatkunde.familienstand.ledig']}"/>
+                            <f:selectItem id="verheiratet" itemValue="VERHEIRATET" itemLabel="#{msgKv['registrierePrivatkunde.familienstand.verheiratet']}"/>
+                            <f:selectItem id="geschieden" itemValue="GESCHIEDEN" itemLabel="#{msgKv['registrierePrivatkunde.familienstand.geschieden']}"/>
+                            <f:selectItem id="verwitwet" itemValue="VERWITWET" itemLabel="#{msgKv['registrierePrivatkunde.familienstand.verwitwet']}"/>
+                        </p:selectOneMenu>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="geschlechtLabel" value="#{msgKv['registrierePrivatkunde.geschlecht']}"/>
+                        <p:selectOneRadio id="geschlecht" value="#{registrierungModel.neuerPrivatkunde.geschlecht}">
+                            <f:selectItem id="weiblich" itemValue="WEIBLICH" itemLabel="#{msgKv['registrierePrivatkunde.geschlecht.weiblich']}"/>
+                            <f:selectItem id="maennlich" itemValue="MAENNLICH" itemLabel="#{msgKv['registrierePrivatkunde.geschlecht.maennlich']}"/>
+                        </p:selectOneRadio>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="newsletterLabel" for="newsletter" value="#{msgKv['registrierePrivatkunde.newsletter']}"/>
+                        <p:selectBooleanCheckbox id="newsletter" value="#{registrierungModel.neuerPrivatkunde.newsletter}"/>
+                        <f:verbatim/>
+
+
+                        <p:outputLabel id="hobbysLabel" value="#{msgKv['registrierePrivatkunde.hobbys']}"/>
+                        <p:selectManyCheckbox id="hobbys" value="#{registrierungModel.hobbys}"
+                                              layout="pageDirection">
+                            <f:selectItem id="sport" itemValue="SPORT"
+                                          itemLabel="#{msgKv['registrierePrivatkunde.sport']}"/>
+                            <f:selectItem id="lesen" itemValue="LESEN" 
+                                          itemLabel="#{msgKv['registrierePrivatkunde.lesen']}"/>
+                            <f:selectItem id="reisen" itemValue="REISEN" 
+                                          itemLabel="#{msgKv['registrierePrivatkunde.reisen']}"/>
+                        </p:selectManyCheckbox>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="emailLabel" for="email" value="#{msgKv['registrierePrivatkunde.email']}"/>
+                        <p:inputText id="email" pt:type="email" value="#{registrierungModel.neuerPrivatkunde.identity.email}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungEmail" for="email"/>
+
+                        <p:outputLabel id="passwordLabel" for="password" value="#{msgKv['registrierePrivatkunde.password']}"/>
+                        <p:password id="password" value="#{registrierungModel.neuerPrivatkunde.identity.password}"
+                                    redisplay="true"
+                                    match="passwordWdh"
+                                    feedback="true"
+                                    promptLabel="#{msgKv['registrierePrivatkunde.password.prompt']}"
+                                    weakLabel="#{msgKv['registrierePrivatkunde.password.weak']}"
+                                    goodLabel="#{msgKv['registrierePrivatkunde.password.good']}"
+                                    strongLabel="#{msgKv['registrierePrivatkunde.password.strong']}"/>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="passwordWdhLabel" for="passwordWdh" value="#{msgKv['registrierePrivatkunde.passwordWdh']}"/>
+                        <p:password id="passwordWdh" value="#{registrierungModel.neuerPrivatkunde.identity.passwordWdh}" redisplay="true"/>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="plzLabel" for="plz" value="#{msgKv['registrierePrivatkunde.plz']}"/>
+                        <p:inputText id="plz" value="#{registrierungModel.neuerPrivatkunde.identity.adresse.plz}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungPlz" for="plz"/>
+
+                        <p:outputLabel id="ortLabel" for="ort" value="#{msgKv['registrierePrivatkunde.ort']}"/>
+                        <p:inputText id="ort" value="#{registrierungModel.neuerPrivatkunde.identity.adresse.ort}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungOrt" for="ort"/>
+
+                        <p:outputLabel id="strasseLabel" for="strasse" value="#{msgKv['registrierePrivatkunde.strasse']}"/>
+                        <p:inputText id="strasse" value="#{registrierungModel.neuerPrivatkunde.identity.adresse.strasse}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:messages id="fehlermeldungStrasse" for="strasse"/>
+
+                        <p:outputLabel id="hausnrLabel" for="hausnr" value="#{msgKv['registrierePrivatkunde.hausnr']}"/>
+                        <p:inputText id="hausnr" value="#{registrierungModel.neuerPrivatkunde.identity.adresse.hausnr}"/>
+                        <f:verbatim/>
+
+                        <p:outputLabel id="agbLabel" for="agb" value="#{msgKv['registrierePrivatkunde.agb']}"/>
+                        <p:selectBooleanCheckbox id="agb" value="#{registrierungModel.neuerPrivatkunde.agbAkzeptiert}">
+                            <p:clientValidator/>
+                        </p:selectBooleanCheckbox>
+                        <p:message id="fehlermeldungAgb" for="agb"/>
+
+                        <!-- Website vorher registrieren bei https://www.google.com/recaptcha
+                        <p:outputLabel id="captchaLabel" for="captcha" value="#{msgKv['registrierePrivatkunde.captcha.label']}">
+                        <p:captcha id="captcha" value="#{registrierungModel.captchaInput}" secure="true" language="en,de"/>
+                        <p:message id="fehlermeldungCaptcha" for="captcha"/>
+                        -->
+
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" action="#{registrierungModel.registrierePrivatkunde}" icon="fa fa-save"
+                                             value="#{msgKv['registrierePrivatkunde.submit']}" ajax="false" validateClient="true"/>
+                            #{' '}
+                            <p:commandButton id="reset" value="#{msgKv['registrierePrivatkunde.reset']}" icon="ui-icon-cancel"
+                                             update="registriereTabelle" process="@this">
+                                <p:resetInput id="resetInput" target="registriereTabelle"/>
+                            </p:commandButton>
+                        </f:facet>
+                    </p:panelGrid>
+                </form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

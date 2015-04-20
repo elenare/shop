@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+    <display-name>shop</display-name>
+    <!--
+    <context-param>
+        <description>Neuere Version von Mojarra 2.2</description>
+        <param-name>org.jboss.jbossfaces.JSF_CONFIG_NAME</param-name>
+        <param-value>mojarra-2.2.x</param-value>
+    </context-param>
+    -->
+    <context-param>
+        <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+        <param-value>/WEB-INF/shop.taglib.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>In welchen Abstaenden prueft der Compiler bzgl. Aenderungen: Einheit = Sekunden, default = 2. In Produktion auf -1 setzen, d.h. keine Pruefung</description>
+        <param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
+        <param-value>1</param-value>
+    </context-param>
+    <context-param>
+        <description>Keine Kommentare in Seiten im Webbrowser</description>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>Nicht-vorhandene Eingabe als null interpretieren und nicht als leerer String</description>
+        <param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>Development: In Entwicklung nicht behandelte Fehlermeldungen anzeigen mit r:messages</description>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>${jsf.project.stage:Production}</param-value>
+    </context-param>
+    <context-param>
+        <description>Auch Eingabefelder ohne Eingabe mit Bean Validation validieren</description>
+        <param-name>javax.faces.VALIDATE_EMPTY_FIELDS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!--
+    <context-param>
+      <param-name>javax.faces.WEBAPP_RESOURCES_DIRECTORY</param-name>
+      <param-value>WEB-INF/resources</param-value>
+    </context-param>
+    -->
+    <context-param>
+        <description>In Produktion: Javascript komprimieren, d.h. auf true setzen</description>
+        <param-name>com.sun.faces.compressJavaScript</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>In Produktion: serverseitige Statusinfo mit GZIP komprimieren</description>
+        <param-name>com.sun.faces.compressViewState</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.displayConfiguration</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>In Produktion: Validierung der Tags mit f: abschalten, d.h. auf false setzen</description>
+        <param-name>com.sun.faces.enableCoreTagLibValidator</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.forceLoadConfiguration</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>In Produktion: hoeherer Wert (in Min.), wann ueberprueft wird, ob es z.B. neue Bilder oder CSS-Dateien gibt</description>
+        <param-name>com.sun.faces.resourceUpdateCheckPeriod</param-name>
+        <param-value>1</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.sendPoweredByHeader</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.validateXml</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>Themes basieren auf ThemeRoller von jQuery Mobile: http://themeroller.jquerymobile.com</description>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>#{theme.value}</param-value>
+    </context-param>
+    <context-param>
+        <description>Ab PrimeFaces 5.1.1: FontAwesome zusaetzl. zu ThemeRoller von jQuery</description>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.CLIENT_SIDE_VALIDATION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>Bean Validation fuer Client-seitige Validierung mittels JavaScript. Auch fuer p:outputLabel</description>
+        <param-name>primefaces.TRANSFORM_METADATA</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>auto</param-value>
+    </context-param>
+    <!--
+    <context-param>
+        <description>Registrierung bei reCaptcha erforderlich: https://www.google.com/recaptcha</description>
+        <param-name>primefaces.PRIVATE_CAPTCHA_KEY</param-name>
+        <param-value>YOUR_PRIVATE_KEY</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.PUBLIC_CAPTCHA_KEY</param-name>
+        <param-value>YOUR_PUBLIC_KEY</param-value>
+    </context-param>
+    -->
+    <context-param>
+        <description>GET + body fuer Atmosphere zulassen (ab Atmosphere 2.3)</description>
+        <param-name>org.atmosphere.util.IOUtils.readGetBody</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <description>Mapping fuer accept in einem Webbrowser: Die Extension json ist inkompatibel mit Swagger 2.x</description>
+        <param-name>resteasy.media.type.mappings</param-name>
+        <param-value>xml : application/xml, image : image/*, text : text/plain</param-value>
+        <!--
+        <param-value>json : application/json, xml : application/xml, image : image/*, text : text/plain</param-value>
+        -->
+    </context-param>
+    <context-param>
+        <description>Pfadangabe bei Verletzung der Bean Validation im JSON-Response aus Sicherheitsgruenden unterdruecken</description>
+        <param-name>resteasy.validation.suppress.path</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <context-param>
+        <description>Zusaetzliche Resource-Klasse fuer RESTEasy aus Swagger (als WildFly-Modul)</description>
+        <param-name>resteasy.resources</param-name>
+        <param-value>com.wordnik.swagger.jaxrs.listing.ApiListingResource</param-value>
+    </context-param>
+    <context-param>
+        <description>Zusaetzliche Provider-Klasse fuer RESTEasy aus Swagger (als WildFly-Modul)</description>
+        <param-name>resteasy.providers</param-name>
+        <param-value>
+            com.wordnik.swagger.jaxrs.json.JacksonJsonProvider
+        </param-value>
+    </context-param>
+    <context-param>
+        <description>Aktivierung von Weld Probe</description>
+        <param-name>org.jboss.weld.development</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <env-entry>
+        <env-entry-name>absenderEmail</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>abcd0011@hs-karlsruhe.de</env-entry-value>
+    </env-entry>
+    <env-entry>
+        <env-entry-name>absenderName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>Joe Doe</env-entry-value>
+    </env-entry>
+    <env-entry>
+        <env-entry-name>empfaengerEmail</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>abcd0011@hs-karlsruhe.de</env-entry-value>
+    </env-entry>
+    <env-entry>
+        <env-entry-name>empfaengerName</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>Joe Doe</env-entry-value>
+    </env-entry>
+    <env-entry>
+        <env-entry-name>locales</env-entry-name>
+        <env-entry-type>java.lang.String</env-entry-type>
+        <env-entry-value>de,en</env-entry-value>
+    </env-entry>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>p/index.jsf</welcome-file>
+    </welcome-file-list>
+    <session-config>
+        <session-timeout>15</session-timeout>
+        <!-- Session-Cookies werden nur ueber TLS gesendet -->
+        <cookie-config>
+            <secure>true</secure>
+        </cookie-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+    <!-- https://github.com/undertow-io/undertow/blob/master/core/src/main/java/io/undertow/util/MimeMappings.java -->
+    <!-- Favicons -->
+    <mime-mapping>
+        <extension>ico</extension>
+        <mime-type>image/x-icon</mime-type>
+    </mime-mapping>
+    <error-page>
+        <location>/p/error/defaultError.jsf</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/p/error/accessDenied.jsf</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/p/error/accessDenied.jsf</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/p/error/pageNotFound.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/p/error/timeout.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>org.jboss.weld.context.NonexistentConversationException</exception-type>
+        <location>/p/error/conversationTimeout.xhtml?nocid=true</location>
+    </error-page>
+    <error-page>
+        <exception-type>com.sun.faces.context.FacesFileNotFoundException</exception-type>
+        <location>/p/error/pageNotFound.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.io.FileNotFoundException</exception-type>
+        <location>/p/error/pageNotFound.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.ejb.EJBAccessException</exception-type>
+        <location>/p/error/accessDenied.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>org.apache.deltaspike.security.api.authorization.AccessDeniedException</exception-type>
+        <location>/p/error/accessDenied.jsf</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.ejb.EJBException</exception-type>
+        <location>/p/error/accessDenied.jsf</location>
+    </error-page>
+    <!-- bis einschl. 2.6.x -->
+    <!--
+    -->
+    <filter>
+        <description>Filter fuer BASIC Authentifizierung</description>
+        <filter-name>AuthenticationFilter</filter-name>
+        <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+        <init-param>
+            <param-name>authType</param-name>
+            <param-value>BASIC</param-value>
+        </init-param>
+        <init-param>
+            <param-name>realmName</param-name>
+            <param-value>Shop</param-value>
+        </init-param>
+        <async-supported/>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFilter</filter-name>
+        <url-pattern>/rest/artikel</url-pattern>
+        <url-pattern>/rest/artikel/*</url-pattern>
+        <url-pattern>/rest/bestellungen</url-pattern>
+        <url-pattern>/rest/bestellungen/*</url-pattern>
+        <url-pattern>/rest/kunden</url-pattern>
+        <url-pattern>/rest/kunden/*</url-pattern>
+        <url-pattern>/rest/iam/*</url-pattern>
+    </filter-mapping>
+  
+    <filter>
+        <description>Filter fuer FORM Authentifizierung</description>
+        <filter-name>AuthenticationFormFilter</filter-name>
+        <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+        <init-param>
+            <param-name>authType</param-name>
+            <param-value>FORM</param-value>
+        </init-param>
+        <init-param>
+            <param-name>form-login-page</param-name>
+            <param-value>/p/iam/login.jsf</param-value>
+        </init-param>
+        <init-param>
+            <param-name>form-error-page</param-name>
+            <param-value>/p/iam/login.jsf?error=true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthenticationFormFilter</filter-name>
+        <url-pattern>/p/artikelverwaltung/*</url-pattern>
+        <url-pattern>/p/bestellverwaltung/*</url-pattern>
+        <url-pattern>/p/kundenverwaltung/list*</url-pattern>
+        <url-pattern>/p/kundenverwaltung/view*</url-pattern>
+        <url-pattern>/p/kundenverwaltung/update*</url-pattern>
+        <url-pattern>/p/kundenverwaltung/upload*</url-pattern>
+    </filter-mapping>
+    
+    <servlet>
+        <servlet-name>FacesServlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FacesServlet</servlet-name>
+        <url-pattern>*.faces</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>PushServlet</servlet-name>
+        <servlet-class>org.primefaces.push.PushServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PushServlet</servlet-name>
+        <url-pattern>/primepush/*</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <description>Filter fuer File Upload</description>
+        <filter-name>FileUploadFilter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+        <init-param>
+            <description>Schwellwert in Bytes fuer das Zwischenspeichern in einer temporaeren Datei: DiskFileItemFactory von Apache Commons FileUpload</description>
+            <param-name>thresholdSize</param-name>
+            <param-value>100000</param-value>
+        </init-param>
+        <!-- default: System.getProperty("java.io.tmpdir") -->
+        <!--
+        <init-param>
+            <param-name>uploadDirectory</param-name>
+            <param-value>C:/temp/upload</param-value>
+        </init-param>
+        -->
+    </filter>
+    <filter-mapping>
+        <filter-name>FileUploadFilter</filter-name>
+        <servlet-name>FacesServlet</servlet-name>
+    </filter-mapping>
+    <listener>
+        <description>Sicherstellen, dass der Thread zum Aufraeumen der temporaeren Dateien auch beendet wird, wenn die Webanwendung beendet wird</description>
+        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+    </listener> 
+</web-app>

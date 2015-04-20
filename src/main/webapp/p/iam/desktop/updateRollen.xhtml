@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgIam['updateRollen.title']}"/>
+        
+            <ui:define name="main">
+                <form jsf:id="sucheForm" jsf:prependId="false">
+                    <section id="sucheSection">
+                        <p:focus id="formFocus" for="loginnameSuche"/>
+
+                        <p:fieldset id="suchePanel" legend="#{msgIam['updateRollen.headingUsername']}">
+                            <p:panelGrid id="suchePanelGrid" columns="4" styleClass="s-grid-noborder">
+                                <p:outputLabel id="loginnameLabel" for="loginnameSuche" value="#{msgIam['updateRollen.loginname']}"/>
+
+                                <!-- default fuer minQueryLength: 1 -->
+                                <p:autoComplete id="loginnameSuche"
+                                                value="#{updateRollenModel.loginname}"
+                                                completeMethod="#{updateRollenModel.findLoginnamenByPrefix}"/> 
+
+                                <p:commandButton id="findButton"
+                                                 actionListener="#{updateRollenModel.findRollenByLoginname}"
+                                                 value="#{msgIam['updateRollen.search']}"
+                                                 icon="fa fa-search"
+                                                 update=":rollenPickListPanel fehlermeldungLoginname"/>
+
+                                <ez:waiting id="inBearbeitung" msg="#{msgIam['updateRollen.inBearbeitung']}"/>
+                            </p:panelGrid>
+
+                            <p:messages id="fehlermeldungLoginname" for="loginnameSuche" severity="error"/>
+                        </p:fieldset>
+                    </section>
+    
+                    <p:spacer id="abstand1" height="20"/>
+                    
+                    <p:outputPanel id="rollenPickListPanel">
+                        <section id="rollenSection">
+                            <!-- Attributwerte fuer effect: blind, bounce, clip, drop, explode, fade (default),
+                                 fold, highlight, puff, pulsate, scale, shake, size, slide -->
+                            <p:pickList id="rollenPickList"
+                                        value="#{updateRollenModel.rollen}"
+                                        var="rolle"
+                                        converter="rolle"
+                                        itemValue="#{rolle}"
+                                        itemLabel="#{rolle.value}"
+                                        addAllLabel="#{msgIam['updateRollen.addAllText']}"
+                                        addLabel="#{msgIam['updateRollen.addText']}"
+                                        removeAllLabel="#{msgIam['updateRollen.removeAllText']}"
+                                        removeLabel="#{msgIam['updateRollen.removeText']}"
+                                        rendered="#{not empty updateRollenModel.rollen}">
+                                <f:facet name="sourceCaption">#{msgIam['updateRollen.verfuegbareRollen']}</f:facet>
+                                <f:facet name="targetCaption">#{msgIam['updateRollen.ausgewaehlteRollen']}</f:facet>
+                            </p:pickList>
+
+                            <p:spacer id="abstand2" height="50"/>
+                            
+                            <p:commandButton id="updateButton" action="#{updateRollenModel.updateRollen}"
+                                             value="#{msgIam['updateRollen.submit']}" icon="fa fa-save" ajax="false"
+                                             rendered="#{not empty updateRollenModel.rollen}"/>
+                        </section>
+                    </p:outputPanel>
+                </form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

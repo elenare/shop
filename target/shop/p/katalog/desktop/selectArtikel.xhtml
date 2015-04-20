@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgAv['selectArtikel.title']}" />
+        
+            <ui:define name="main">
+                <form jsf:id="selectForm" jsf:prependId="false">
+                    <p:panelGrid id="selectGrid" columns="2" styleClass="s-grid-noborder">
+                        <p:selectOneMenu id="artikelBezeichnung" value="#{warenkorb.artikel}" var="a">
+                            <f:selectItem id="artikelItemLabel" itemLabel="#{msgAv['selectArtikel.auswahl']}" itemValue=""/>
+                            <f:selectItems id="artikelItems" value="#{katalogModel.verfuegbareArtikel}" var="artikel"
+                                           itemValue="#{artikel}" itemLabel="#{artikel.bezeichnung}"/>
+
+                            <p:column>#{a.bezeichnung}</p:column>
+                            <p:column>#{a.preis}</p:column>
+                        </p:selectOneMenu>
+
+                        <p:commandButton id="selectButton" action="#{warenkorb.add}"
+                                         value="#{msgAv['selectArtikel.select']}"
+                                         icon="fa fa-shopping-cart" ajax="false"/>
+                    </p:panelGrid>
+                </form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

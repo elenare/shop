@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:define name="metadata">
+                <f:event type="preRenderView" listener="#{lastPageModel.remember()}"/>
+            </ui:define>
+            
+            <ui:param name="pageTitle" value="#{msgBv['confirmBestellung.title']}"/>
+        
+            <ui:define name="main">
+                <p:messages id="fehlermeldungen" severity="error"/>
+                
+                <form jsf:id="bestellungForm" jsf:prependId="false">
+                    <p:dataTable id="positionenTabelle"
+                                 value="#{warenkorb.positionen.values()}"
+                                 var="pos">
+                        <f:facet name="header">
+                            #{msgBv['confirmBestellung.header']}
+                        </f:facet>
+                        
+                        <p:column id="artikelIdSpalte" headerText="#{msgBv['confirmBestellung.artikel.id']}">
+                            #{pos.artikel.id}
+                        </p:column>
+            
+                        <p:column id="bezeichnungSpalte" headerText="#{msgBv['confirmBestellung.artikel.bezeichnung']}">
+                            #{pos.artikel.bezeichnung}
+                        </p:column>
+            
+                        <p:column id="anzahlSpalte" headerText="#{msgBv['confirmBestellung.artikel.anzahl']}">
+                            #{pos.anzahl}
+                        </p:column>
+                        
+                        <p:column id="preisSpalte" headerText="#{msgBv['confirmBestellung.artikel.preis']}">
+                            <h:outputText id="preis" value="#{pos.artikel.preis}">
+                                <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+                        
+                        <f:facet name="footer">
+                            <p:commandButton id="bestellenButton" action="#{bestellungModel.bestellen}" value="#{msgBv['confirmBestellung.bestellen']}" icon="fa fa-check" ajax="false"/>
+                        </f:facet>
+                    </p:dataTable>
+                </form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<jboss-deployment-structure>
+    <deployment>
+        <dependencies>
+            <module name="org.picketlink.core" meta-inf="import"/>
+            <module name="org.picketlink.core.api" meta-inf="import"/>
+            <module name="org.picketlink.idm.api" meta-inf="import"/>
+            <module name="org.picketlink.idm.schema" meta-inf="import"/>
+            
+            <!-- PrimeFaces nutzt iText (für den PDF-Export), welches wiederum dom4j nutzt -->
+            <module name="org.dom4j"/>
+            
+            <!-- PrimeFaces FileUpload benoetigt in web.xml den Listener FileCleanerCleanup aus Commons FileUpload, -->
+            <!-- der wiederum die Klasse FileCleaningTracker aus Commons IO benoetigt -->
+            <module name="org.apache.commons.io"/>
+
+            <module name="com.wordnik.swagger"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

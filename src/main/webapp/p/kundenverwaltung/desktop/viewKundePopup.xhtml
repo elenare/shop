@@ -1,0 +1,179 @@
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:s="http://shop.de">
+                
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <p:tabView id="tabView" dynamic="false">
+        <p:tab id="stammdatenTab">
+            <f:facet name="title">
+                <img jsf:id="stammdatenGif" jsf:name="stammdaten.gif" jsf:library="img" width="16" height="16"/>
+                #{' '}
+                #{msgKv['viewKundePopup.kunde.stammdaten']}
+            </f:facet>
+            
+            <p:panelGrid id="stammdatenGrid" columns="2" styleClass="s-grid-noborde">
+                <p:outputLabel id="idLabel" value="#{msgKv['viewKundePopup.kundenr']}"/>
+                <h:outputText id="id" value="#{listKundenModel.selectedKunde.id}"/>
+
+                <p:outputLabel id="loginnameLabel" value="#{msgKv['viewKundePopup.loginname']}"/>
+                <h:outputText id="loginname" value="#{listKundenModel.selectedKunde.identity.loginname}"/>
+
+                <p:outputLabel id="nachnameLabel" value="#{msgKv['viewKundePopup.nachname']}"/>
+                <h:outputText id="nachname" value="#{listKundenModel.selectedKunde.identity.nachname}"/>
+
+                <p:outputLabel id="vornameLabel" value="#{msgKv['viewKundePopup.vorname']}"/>
+                <h:outputText id="vorname" value="#{listKundenModel.selectedKunde.identity.vorname}"/>
+
+                <p:outputLabel id="seitLabel" value="#{msgKv['viewKundePopup.seit']}"/>
+                <h:outputText id="seit" value="#{listKundenModel.selectedKunde.seit}">
+                    <f:convertDateTime type="date" dateStyle="long"/>
+                </h:outputText>
+
+                <p:outputLabel id="umsatzLabel" value="#{msgKv['viewKundePopup.umsatz']}"/>
+                <h:outputText id="umsatz" value="#{listKundenModel.selectedKunde.umsatz}">
+                    <f:convertNumber type="currency" currencyCode="EUR"/>
+                </h:outputText>
+
+                <p:outputLabel id="emailLabel" value="#{msgKv['viewKundePopup.email']}"/>
+                <h:outputText id="email" value="#{listKundenModel.selectedKunde.identity.email}"/>
+
+                <p:outputLabel id="firmenkundeLabel" value="#{msgKv['viewKundePopup.kundenart']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Firmenkunde'}"/>
+                <h:outputText id="firmenkunde" value="#{msgKv['viewKundePopup.firmenkunde']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Firmenkunde'}"/>
+
+                <p:outputLabel id="privatkundeLabel" value="#{msgKv['viewKundePopup.kundenart']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde'}"/>
+                <h:outputText id="privatkunde" value="#{msgKv['viewKundePopup.privatkunde']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde'}"/>
+
+                <p:outputLabel id="rabattLabel" value="#{msgKv['viewKundePopup.rabatt']}"/>
+                <h:outputText id="rabatt" value="#{listKundenModel.selectedKunde.rabatt}">
+                    <f:convertNumber type="percent" maxFractionDigits="2"/>
+                </h:outputText>
+
+                <p:outputLabel id="familienstandLabel" value="#{msgKv['viewKundePopup.familienstand']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'LEDIG'}"/>
+                <h:outputText id="familienstand" value="#{msgKv['viewKundePopup.familienstand.ledig']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'LEDIG'}"/>
+
+                <p:outputLabel id="verheiratetLabel" value="#{msgKv['viewKundePopup.familienstand']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'VERHEIRATET'}"/>
+                <h:outputText id="verheiratet" value="#{msgKv['viewKundePopup.familienstand.verheiratet']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'VERHEIRATET'}"/>
+
+                <p:outputLabel id="geschiedenLabel" value="#{msgKv['viewKundePopup.familienstand']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'GESCHIEDEN'}"/>
+                <h:outputText id="geschieden" value="#{msgKv['viewKundePopup.familienstand.geschieden']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'GESCHIEDEN'}"/>
+
+                <p:outputLabel id="verwitwetLabel" value="#{msgKv['viewKundePopup.familienstand']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'VERWITWET'}"/>
+                <h:outputText id="verwitwet" value="#{msgKv['viewKundePopup.familienstand.verwitwet']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.familienstand eq 'VERWITWET'}"/>
+
+                <p:outputLabel id="weiblichLabel" value="#{msgKv['viewKundePopup.geschlecht']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.geschlecht eq 'WEIBLICH'}"/>
+                <h:outputText id="weiblich" value="#{msgKv['viewKundePopup.geschlecht.weiblich']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.geschlecht eq 'WEIBLICH'}"/>
+
+                <p:outputLabel id="maennlichLabel" value="#{msgKv['viewKundePopup.geschlecht']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.geschlecht eq 'MAENNLICH'}"/>
+                <h:outputText id="maennlich" value="#{msgKv['viewKundePopup.geschlecht.maennlich']}" rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde' and listKundenModel.selectedKunde.geschlecht eq 'MAENNLICH'}"/>
+
+                <p:outputLabel id="newsletterLabel" value="#{msgKv['viewKundePopup.newsletter']}"/>
+                <p:selectBooleanButton id="newsletter" value="#{listKundenModel.selectedKunde.newsletter}"
+                                       onLabel="#{msgKv['viewKundePopup.ja']}" onIcon="fa fa-check" offLabel="#{msgKv['viewKundePopup.nein']}"
+                                       disabled="true"/>
+
+                <p:outputLabel id="hobbysLabel" value="#{msgKv['viewKundePopup.hobbys']}"
+                               rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde'}"/>
+                <p:selectManyCheckbox value="#{listKundenModel.selectedKunde.hobbys}"
+                                      layout="pageDirection"
+                                      disabled="true"
+                                      rendered="#{listKundenModel.selectedKunde.class.simpleName eq 'Privatkunde'}">
+                    <f:selectItem itemValue="SPORT"
+                                  itemLabel="#{msgKv['viewKundePopup.hobbys.sport']}"/>
+                    <f:selectItem itemValue="LESEN" 
+                                  itemLabel="#{msgKv['viewKundePopup.hobbys.lesen']}"/>
+                    <f:selectItem itemValue="REISEN" 
+                                  itemLabel="#{msgKv['viewKundePopup.hobbys.reisen']}"/>
+                </p:selectManyCheckbox>
+            </p:panelGrid>
+        </p:tab>
+        
+        <p:tab id="bestellungenTab" rendered="#{not empty listKundenModel.selectedKunde.bestellungen}">
+            <f:facet name="title">
+                <img jsf:id="bestellungenIcon" jsf:name="bestellungen.gif" jsf:library="img" width="16" height="16"/>
+                #{' '}
+                #{msgKv['viewKundePopup.kunde.bestellungen']}
+            </f:facet>
+
+            <p:dataTable id="bestellungenTabelle" value="#{listKundenModel.selectedKunde.bestellungen}" var="bestellung">
+                <p:column id="togglerCol" style="width:16px">
+                    <p:rowToggler id="rowToggler"/>
+                </p:column>
+                <p:column id="bestellungIdCol" headerText="#{msgKv['viewKundePopup.bestellung.id']}">
+                    <h:outputText id="bestellungId" value="#{bestellung.id}"/>
+                </p:column>
+                <p:column id="datumcol" headerText="#{msgKv['viewKundePopup.bestellung.datum']}">
+                    <h:outputText id="datum" value="#{bestellung.erzeugt}">
+                        <f:convertDateTime type="date"/>
+                    </h:outputText>
+                </p:column>
+                <p:column id="gesamtbetragCol" headerText="#{msgKv['viewKundePopup.bestellung.gesamtbetrag']}">
+                    <h:outputText id="gesamtbetrag" value="#{bestellung.gesamtbetrag}">
+                        <f:convertNumber type="currency" currencyCode="EUR"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:rowExpansion id="bestellungSubtable">
+                    <p:dataTable id="bestellungTabelle" value="#{bestellung.bestellpositionen}" var="bpos">
+                         <p:column id="artikelIdCol" headerText="#{msgKv['viewKundePopup.artikel.id']}">
+                            <h:outputText id="artikelId" value="#{bpos.artikel.id}"/>
+                        </p:column>
+                         <p:column id="artikelBezeichnungCol" headerText="#{msgKv['viewKundePopup.artikel.bezeichnung']}">
+                            <h:outputText id="artikelBezeichnung" value="#{bpos.artikel.bezeichnung}"/>
+                        </p:column>
+                         <p:column id="artikelAnzahlCol" headerText="#{msgKv['viewKundePopup.artikel.anzahl']}">
+                            <h:outputText id="artikelAnzahl" value="#{bpos.anzahl}"/>
+                        </p:column>
+                         <p:column id="artikelPreisCol" headerText="#{msgKv['viewKundePopup.artikel.preis']}">
+                            <f:facet name="footer">
+                                <h:outputText id="gesamtbetragFooter" value="#{bestellung.gesamtbetrag}">
+                                    <f:convertNumber type="currency" currencyCode="EUR"/>
+                                </h:outputText>
+                            </f:facet>
+                            <h:outputText id="artikelPreis" value="#{bpos.artikel.preis}">
+                                <f:convertNumber type="currency" currencyCode="EUR"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:rowExpansion>
+            </p:dataTable>
+        </p:tab>
+        
+        <p:tab id="bemerkungenTab" rendered="#{not empty listKundenModel.selectedKunde.bemerkungen}">
+            <f:facet name="title">
+                <img jsf:id="bemerkungenGif" jsf:name="text.gif" jsf:library="img" width="16" height="16"/>
+                #{' '}
+                #{msgKv['viewKundePopup.kunde.bemerkungen']}
+            </f:facet>
+                    
+            <h:outputText id="bemerkungen" value="#{listKundenModel.selectedKunde.bemerkungen}" escape="false"/>
+        </p:tab>
+    </p:tabView>
+</ui:composition>

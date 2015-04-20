@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <!-- Icons von jQuery ThemeRoller -->
+    <!--    http://jqueryui.com/themeroller -->
+    <!--    http://jquery-ui.googlecode.com/svn/tags/1.8.24/tests/static/icons.html // GitHub ab 1.9 -->
+
+    <form jsf:id="navForm" jsf:prependId="false">
+        <!-- p:panelMenu ist initial zugeklappt -->
+        <p:menu id="navMenu" toggleable="true" styleClass="s-menu">
+            <p:submenu id="artikelverwaltung"
+                       label="#{msg['nav.artikelverwaltung']}">
+                <!-- fa fa-save -->
+                <p:menuitem id="artikelverwaltungCreateArtikelItem"
+                            icon="ui-icon-disk"
+                            value="#{msg['nav.artikelverwaltung.createArtikel']}"
+                            outcome="/p/artikelverwaltung/createArtikel?cid=#{javax.enterprise.context.conversation.id}"
+                            rendered="#{rollenModel.isInRole('admin') or rollenModel.isInRole('mitarbeiter')}"/>
+                <!-- fa fa-search -->
+                <p:menuitem id="artikelverwaltungListArtikelItem"
+                            icon="ui-icon-search"
+                            value="#{msg['nav.artikelverwaltung.listArtikel']}"
+                            outcome="/p/katalog/listArtikel?init=true&#38;cid=#{javax.enterprise.context.conversation.id}"/>
+                <!-- fa fa-folder-o -->
+                <p:menuitem id="artikelverwaltungSelectArtikelItem"
+                            icon="ui-icon-folder-open"
+                            value="#{msg['nav.artikelverwaltung.selectArtikel']}"
+                            action="#{katalogModel.loadVerfuegbareArtikel}"
+                            ajax="false"/>
+            </p:submenu>
+
+            <p:submenu id="bestellverwaltung"
+                       label="#{msg['nav.bestellverwaltung']}"
+                       rendered="#{not empty warenkorb.positionen}">
+                <!-- fa fa-shopping-cart -->
+                <p:menuitem id="bestellverwaltungViewWarenkorbItem"
+                            icon="ui-icon-cart"
+                            value="#{msg['nav.bestellverwaltung.viewWarenkorb']}"
+                            outcome="/p/katalog/viewWarenkorb?cid=#{javax.enterprise.context.conversation.id}"/>
+            </p:submenu>
+            
+            <p:submenu id="kundenverwaltung"
+                       label="#{msg['nav.kundenverwaltung']}"
+                       rendered="#{identity.loggedIn}">
+                <!-- fa fa-search -->
+                <p:menuitem id="kundenverwaltungViewKundeItem"
+                            icon="ui-icon-search"
+                            value="#{msg['nav.kundenverwaltung.viewKunde']}"
+                            outcome="/p/kundenverwaltung/viewKunde?cid=#{javax.enterprise.context.conversation.id}"
+                            rendered="#{rollenModel.isInRole('admin') or rollenModel.isInRole('mitarbeiter')}"/>
+                
+                <!-- fa fa-user -->
+                <p:menuitem id="kundenverwaltungListKundenItem"
+                            icon="ui-icon-person"
+                            value="#{msg['nav.kundenverwaltung.listKunden']}"
+                            outcome="/p/kundenverwaltung/listKunden?init=true&#38;cid=#{javax.enterprise.context.conversation.id}"
+                            rendered="#{rollenModel.isInRole('admin') or rollenModel.isInRole('mitarbeiter')}"/>
+                
+                <!-- fa fa-gear -->
+                <p:menuitem id="authUpdateRolesItem"
+                            icon="ui-icon-gear"
+                            value="#{msg['nav.iam.updateRollen']}"
+                            outcome="/p/iam/updateRollen?cid=#{javax.enterprise.context.conversation.id}"
+                            rendered="#{rollenModel.isInRole('admin')}"/>
+                
+                <!-- fa fa-upload -->
+                <p:menuitem id="kundenverwaltungUploadItem"
+                            icon="ui-icon-arrowthick-1-n"
+                            value="#{msg['nav.kundenverwaltung.upload']}"
+                            outcome="/p/kundenverwaltung/upload?cid=#{javax.enterprise.context.conversation.id}"
+                            rendered="#{rollenModel.isInRole('kunde')}"/>
+            </p:submenu>
+        </p:menu>
+    </form>
+</ui:composition>

@@ -1,0 +1,226 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:s="http://shop.de">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:define name="metadata">
+                <f:event type="preRenderView" listener="#{updateKundeModel.hobbyTypeToString}"/>
+            </ui:define>
+            
+            <ui:param name="pageTitle" value="#{msgKv['updatePrivatkunde.title']}"/>
+        
+            <ui:define name="main">
+                <p:breadCrumb id="breadCrumb">
+                    <p:menuitem id="breadCrumbHome" outcome="/p/index"/>
+                    <p:menuitem id="breadCrumbViewKunde" value="#{msg['nav.kundenverwaltung.viewKunde']}"
+                                outcome="/p/kundenverwaltung/viewKunde"
+                                rendered="#{updateKundeModel.vorherigeSeite eq 'viewKunde'}"/>
+                    <p:menuitem id="breadCrumbListKunden" value="#{msg['nav.kundenverwaltung.listKunden']}"
+                                outcome="/p/kundenverwaltung/listKunden"
+                                rendered="#{updateKundeModel.vorherigeSeite eq 'listKunden'}"/>
+                </p:breadCrumb>
+                
+                <h:panelGroup id="keinKundeGroup" rendered="#{empty updateKundeModel.kunde}">
+                    <span class="ui-messages-info-icon"></span>
+                    #{' '}
+                    <h:outputText id="text" value="#{msgKv['updatePrivatkunde.keinKunde']}" styleClass="ui-outputlabel ui-widget"/>
+                </h:panelGroup>
+
+                <p:growl id="growlMessages" severity="error" life="3000"/>
+                <p:messages id="fehlermeldungGobal" globalOnly="true"/>
+                
+                <p id="updateKundeMsg"></p>
+                
+                <form jsf:id="updateKundeForm" jsf:prependId="false" jsf:rendered="#{not empty updateKundeModel.kunde}">
+                    <p:panelGrid id="updateKundeTabelle" columns="3" styleClass="s-grid-noborder">
+                        <f:facet name="header">
+                            <h:outputFormat id="headingFirmenkunde" value="#{msgKv['updatePrivatkunde.heading']}">
+                                <f:param id="idWert" value="#{updateKundeModel.kunde.id}"/>
+                            </h:outputFormat>
+                        </f:facet>
+                        
+                        <p:outputLabel id="loginnameLabel" for="nachname" value="#{msgKv['updatePrivatkunde.loginname']}"/>
+                        <p:inputText id="loginname" pt:autofocus="true" value="#{updateKundeModel.kunde.identity.loginname}" valueChangeListener="#{updateKundeModel.geaendert}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:message id="fehlermeldungenLoginname" for="loginname"/>
+            
+                        <p:outputLabel id="nachnameLabel" for="nachname" value="#{msgKv['updatePrivatkunde.nachname']}"/>
+                        <p:inputText id="nachname" value="#{updateKundeModel.kunde.identity.nachname}" valueChangeListener="#{updateKundeModel.geaendert}">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:message id="fehlermeldungenNachname" for="nachname"/>
+            
+                        <p:outputLabel id="vornameLabel" for="vorname" value="#{msgKv['updatePrivatkunde.vorname']}"/>
+                        <p:inputText id="vorname" value="#{updateKundeModel.kunde.identity.vorname}" valueChangeListener="#{updateKundeModel.geaendert}"/>
+                        <f:verbatim/>
+                        
+                        <p:outputLabel id="kategorieLabel" for="kategorie" value="#{msgKv['updatePrivatkunde.kategorie']}"/>
+                        <p:spinner id="kategorie"
+                                   value="#{updateKundeModel.kunde.kategorie}"
+                                   min="0" max="5" size="1"
+                                   valueChangeListener="#{updateKundeModel.geaendert}"/>
+                        <f:verbatim/>
+                        
+                        <p:outputLabel id="seitLabel" for="seit" value="#{msgKv['updatePrivatkunde.seit']}"/>
+                        <!--
+                                    pattern="#{msgKv['updatePrivatkunde.calendar.pattern']}"
+                        -->
+                        <p:calendar id="seit"
+                                    value="#{updateKundeModel.kunde.seit}"
+                                    locale="#{locale}"
+                                    lang="#{locale}"
+                                    timeZone="#{s:timeZone('Europe/Berlin')}"
+                                    navigator="true"
+                                    showButtonPanel="true"
+                                    valueChangeListener="#{updateKundeModel.geaendert}">
+                            <p:ajax event="dateSelect" update="fehlermeldungenSeit"/>
+                        </p:calendar>
+                        <p:message id="fehlermeldungenSeit" for="seit"/>
+                        
+                        <p:outputLabel id="umsatzLabel" for="umsatz" value="#{msgKv['updatePrivatkunde.umsatz']}"/>
+                        <p:inputText id="umsatz" value="#{updateKundeModel.kunde.umsatz}"
+                                     converterMessage="#{msgKv['updatePrivatkunde.umsatz.convert']}"
+                                     valueChangeListener="#{updateKundeModel.geaendert}">
+                            <!--
+                            <f:convertNumber type="currency"
+                                             currencyCode="EUR"
+                                             maxFractionDigits="2"/>
+                            -->
+                            <f:ajax event="blur" render="updateKundeForm:fehlermeldungenUmsatz"/>
+                        </p:inputText>
+                        <p:message id="fehlermeldungenUmsatz" for="umsatz"/>
+                        
+                        <p:outputLabel id="rabattLabel" for="rabatt" value="#{msgKv['updatePrivatkunde.rabatt']}"/>
+                        <p:inputText id="rabatt" value="#{updateKundeModel.kunde.rabatt}"
+                                     converterMessage="#{msgKv['updatePrivatkunde.rabatt.convert']}"
+                                     valueChangeListener="#{updateKundeModel.geaendert}">
+                            <f:convertNumber type="percent"
+                                             maxFractionDigits="2"
+                                             maxIntegerDigits="2"/>
+                            <f:ajax event="blur" render="updateKundeForm:fehlermeldungenRabatt"/>
+                        </p:inputText>
+                        <p:message id="fehlermeldungenRabatt" for="rabatt"/>
+            
+                        <p:outputLabel id="familienstandLabel" for="familienstandMenu" value="#{msgKv['updatePrivatkunde.familienstand']}"/>
+                        <h:panelGroup id="familienstandGroup">
+                            <c:choose>
+                                <c:when test="#{updateKundeModel.kunde.familienstand eq 'LEDIG'}">
+                                    <c:set var="familienstandAktuell" value="#{msgKv['updatePrivatkunde.familienstand.ledig']}" scope="view"/>
+                                </c:when>
+                                <c:when test="#{updateKundeModel.kunde.familienstand eq 'VERHEIRATET'}">
+                                    <c:set var="familienstandAktuell" value="#{msgKv['updatePrivatkunde.familienstand.verheiratet']}" scope="view"/>
+                                </c:when>
+                                <c:when test="#{updateKundeModel.kunde.familienstand eq 'GESCHIEDEN'}">
+                                    <c:set var="familienstandAktuell" value="#{msgKv['updatePrivatkunde.familienstand.geschieden']}" scope="view"/>
+                                </c:when>
+                                <c:when test="#{updateKundeModel.kunde.familienstand eq 'VERWITWET'}">
+                                    <c:set var="familienstandAktuell" value="#{msgKv['updatePrivatkunde.familienstand.verwitwet']}" scope="view"/>
+                                </c:when>
+                            </c:choose>
+                            <p:selectOneMenu id="familienstandMenu" value="#{updateKundeModel.kunde.familienstand}"
+                                             valueChangeListener="#{updateKundeModel.geaendert}">
+                                <f:selectItem id="aktuellerFamilienstand" itemValue="#{updateKundeModel.kunde.familienstand}" itemLabel="#{familienstandAktuell}"/>
+                                <f:selectItem id="abstandFamilienstand" itemValue="" itemLabel=""/>
+                                <f:selectItem id="ledig" itemValue="LEDIG" itemLabel="#{msgKv['updatePrivatkunde.familienstand.ledig']}"/>
+                                <f:selectItem id="verheiratet" itemValue="VERHEIRATET" itemLabel="#{msgKv['updatePrivatkunde.familienstand.verheiratet']}"/>
+                                <f:selectItem id="geschieden" itemValue="GESCHIEDEN" itemLabel="#{msgKv['updatePrivatkunde.familienstand.geschieden']}"/>
+                                <f:selectItem id="verwitwet" itemValue="VERWITWET" itemLabel="#{msgKv['updatePrivatkunde.familienstand.verwitwet']}"/>
+                            </p:selectOneMenu>
+                        </h:panelGroup>
+                        <f:verbatim/>
+        
+                        <p:outputLabel id="newsletterLabel" for="newsletter" value="#{msgKv['updatePrivatkunde.newsletter']}"/>
+                        <p:selectBooleanCheckbox id="newsletter" value="#{updateKundeModel.kunde.newsletter}" valueChangeListener="#{updateKundeModel.geaendert}"/>
+                        <f:verbatim/>
+        
+                        <p:outputLabel id="hobbysLabel" value="#{msgKv['updatePrivatkunde.hobbys']}"/>
+                        <p:selectManyCheckbox id="hobbysl" value="#{updateKundeModel.hobbys}"
+                                              layout="pageDirection"
+                                              valueChangeListener="#{updateKundeModel.geaendert}">
+                            <f:selectItem itemValue="SPORT"
+                                          itemLabel="#{msgKv['updatePrivatkunde.sport']}"/>
+                            <f:selectItem itemValue="LESEN" 
+                                          itemLabel="#{msgKv['updatePrivatkunde.lesen']}"/>
+                            <f:selectItem itemValue="REISEN" 
+                                          itemLabel="#{msgKv['updatePrivatkunde.reisen']}"/>
+                        </p:selectManyCheckbox>
+                        <f:verbatim/>
+                        
+                        <p:outputLabel id="emailLabel" for="email" value="#{msgKv['updatePrivatkunde.email']}"/>
+                        <p:inputText id="email" value="#{updateKundeModel.kunde.identity.email}"
+                                     valueChangeListener="#{updateKundeModel.geaendert}"
+                                     size="40">
+                            <p:clientValidator/>
+                        </p:inputText>
+                        <p:message id="fehlermeldungenEmail" for="email"/>
+                    </p:panelGrid>
+                    
+                    <p>
+                        <p:outputLabel id="bemerkungenLabel" value="#{msgKv['updatePrivatkunde.bemerkungen']}"/>
+                        <p:message id="fehlermeldungBemerkungen" for="bemerkungen"/>
+                        <p:editor id="bemerkungen"
+                                  value="#{updateKundeModel.kunde.bemerkungen}"
+                                  valueChangeListener="#{updateKundeModel.geaendert}"
+                                  controls="bold italic underline strikethrough subscript superscript font size style color highlight bullets numbering alignleft center alignright justify undo redo rule image link unlink cut copy paste pastetext print source outdent indent"
+                                  width="900"
+                                  height="300"/>
+                    </p>
+                        
+                    <h:panelGroup id="buttons">
+                        <p:commandButton id="updateButton" action="#{updateKundeModel.update}" icon="fa fa-save"
+                                         value="#{msgKv['updatePrivatkunde.submit']}" ajax="false"/>
+                        #{' '}
+                        <p:commandButton id="resetButton" value="#{msgKv['updatePrivatkunde.reset']}" icon="ui-icon-cancel"
+                                         update="updateKundeTabelle" process="@this">
+                            <p:resetInput  id="resetInput" target="updateKundeTabelle"/>
+                        </p:commandButton>
+                        #{' '}
+                        <p:commandButton id="reloadButton" action="#{updateKundeModel.reload(updateKundeModel.kunde.id)}" icon="fa fa-refresh"
+                                         value="#{msgKv['updatePrivatkunde.reload']}"/>
+                    </h:panelGroup>
+                </form>
+
+                <p:socket id="updateKundeSocket" onMessage="handleMessage" channel="/updateKunde"/>
+                <script type="text/javascript">
+                    // Nicht in eine Skriptdatei ausgelagert, damit die Studierenden direkt den JS-Code sehen
+                    function handleMessage(data) {
+                        'use strict';
+                        if (data === '#{updateKundeModel.kunde.id}') {
+                            console.log('Kunde ID: ' + data);
+                            let htmlStr = '&lt;div class="ui-message ui-message-error ui-widget ui-corner-all"&gt;';
+                            htmlStr += '&lt;span class="ui-message-error-icon"&gt;&lt;/span&gt;';
+                            htmlStr += '#{msgKv['updatePrivatkunde.concurrentUpdate']}';
+                            htmlStr += '&lt;/div&gt;';
+                            console.log('htmlStr: ' + htmlStr);
+                            $('#updateKundeMsg').html(htmlStr);
+                        }
+                    }
+                </script>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

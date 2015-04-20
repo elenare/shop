@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    
+    <!-- Kein Template, um die Studenten nicht zu ueberfordern -->
+    
+    <head jsf:id="head">
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+        <title>Kunden</title>
+    </head>
+
+    <body jsf:id="body">
+        <!-- Keine Kopf-, Navigations- und Fussleiste, um die Studenten nicht zu ueberfordern -->
+        
+        <main>
+            <h:dataTable id="kundenTabelle" value="#{kunden}" var="kunde">
+                <f:facet name="header">#{kunden.size()} gefundene Kunden</f:facet>
+
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    #{kunde.id}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">Nachname</f:facet>
+                    #{kunde.nachname}
+                </h:column>
+                
+                <h:column>
+                    <f:facet name="header">Vorname</f:facet>
+                    #{kunde.vorname}
+                </h:column>
+            </h:dataTable>
+        </main>
+    </body>
+</html>

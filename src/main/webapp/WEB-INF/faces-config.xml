@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+              version="2.2">
+ <application>
+  <locale-config>
+   <default-locale>en</default-locale>
+   <supported-locale>de</supported-locale>
+  </locale-config>
+  
+  <message-bundle>ApplicationMessages</message-bundle>
+
+  <!-- DB statt Properties-Datei(en) -->
+  <!-- http://stackoverflow.com/questions/9080474/messages-properties-taken-from-db -->
+  <!-- http://stackoverflow.com/questions/4499732/internationalization-in-jsf-with-resourcebundle-entries-which-are-loaded-from-da -->
+  <resource-bundle>
+   <base-name>jsf.Messages</base-name>
+   <var>msg</var>
+  </resource-bundle>
+  
+  <resource-bundle>
+   <base-name>jsf.kundenverwaltung.Messages</base-name>
+   <var>msgKv</var>
+  </resource-bundle>
+  
+  <resource-bundle>
+   <base-name>jsf.bestellverwaltung.Messages</base-name>
+   <var>msgBv</var>
+  </resource-bundle>
+ 
+  <resource-bundle>
+   <base-name>jsf.artikelverwaltung.Messages</base-name>
+   <var>msgAv</var>
+  </resource-bundle>
+  
+  <resource-bundle>
+   <base-name>jsf.iam.Messages</base-name>
+   <var>msgIam</var>
+  </resource-bundle>
+  
+  <!--
+  <resource-library-contracts>
+      <contract-mapping>
+          <url-pattern>/p/*</url-pattern>
+          <contracts>shop</contracts>
+      </contract-mapping>
+  </resource-library-contracts>
+  -->
+ </application>
+ 
+ <!-- Vermeidung von Cross-side request forgery (CSRF, "See-surf") -->
+ <faces-config-extension>
+    <protected-views>
+       <url-pattern>/p/kundenverwaltung/viewKunde.xhtml</url-pattern>
+       <url-pattern>/p/kundenverwaltung/listKunden.xhtml</url-pattern>
+       <url-pattern>/p/kundenverwaltung/registrierePrivatkunde.xhtml</url-pattern>
+       <url-pattern>/p/kundenverwaltung/updateFirmenkunde.xhtml</url-pattern>
+       <url-pattern>/p/kundenverwaltung/updatePrivatkunde.xhtml</url-pattern>
+       <url-pattern>/p/bestellverwaltung/confirmBestellung.xhtml</url-pattern>
+    </protected-views>
+ </faces-config-extension>
+
+</faces-config>

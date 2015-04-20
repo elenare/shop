@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msg['login.title']}"/>
+        
+            <ui:define name="main">
+                <p:fieldset id="loginPanel" legend="#{msg['login.heading']}">
+                    <form jsf:id="loginForm" jsf:prependId="false">
+                        <p:panelGrid id="loginGrid" columns="3" styleClass="s-grid-noborder">
+                            <p:outputLabel id="loginnameLabel" for="loginname" value="#{msg['login.loginname']}"/>
+                            <p:inputText id="loginname" value="#{loginCredentials.userId}"  pt:autofocus="true" tabindex="10"/>
+                            <f:verbatim/>
+                                    
+                            <p:outputLabel id="passwordLabel" for="password" value="#{msg['login.password']}"/>
+                            <p:password id="password" value="#{loginCredentials.password}" redisplay="true" tabindex="11"/>
+                            <p:commandButton id="loginButton" action="#{loginModel.loginForm}" value="#{msg['login.submit']}" ajax="false" tabindex="12"/>
+                        </p:panelGrid>
+                    </form>
+                    
+                    <p:spacer id="abstand" height="20"/>
+
+                    <c:if test="#{param.error eq 'true'}">
+                        <span class="ui-messages-error-icon ui-messages-error ui-messages-error-summary">
+                            #{msg['login.error']}
+                        </span>
+                    </c:if>
+                </p:fieldset>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

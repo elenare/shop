@@ -1,0 +1,116 @@
+/*
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// -----------------------------------------------------------------------------
+// Uebersetzung in einer Eingabeaufforderung durch:
+//    lessc shop-bluesky.less shop-bluesky.css
+// -----------------------------------------------------------------------------
+
+//@import "another-less-file";
+
+@noBorder: none;
+
+// Hoehe der Kopfleiste
+@header-height: 85px;
+
+// Breite und Hoehe der Navigationsleiste
+@nav-width: 15%;
+@nav-height: 550px;
+
+// Normaler und grosser Innenabstand innerhalb von Navigationsleite, Article, ...
+@padding-normal: 5px;
+@padding-large: 10px;
+@padding-xlarge: 20px;
+@padding-xxlarge: 30px;
+
+//@background-odd: #C9D1F7;
+@background-odd: #F2F5F9;
+//@background-even: #DDE3FD;
+@background-hover: #78BCFF;
+
+// -----------------------------------------------------------------------------
+// Layout-Gestaltung : # fuer Tag-ID und . fuer CSS-Klasse
+// -----------------------------------------------------------------------------
+
+header {
+    // clear: left;
+    height: @header-height;
+    // width: 99%;
+}
+
+nav {
+    float: left;
+    width: @nav-width;
+    height: @nav-height;
+    padding-top: @padding-xlarge;
+    padding-bottom: @padding-xlarge;
+    //background-color: @background-color;
+}
+
+main {
+    margin-left: @nav-width;
+    // width: 80%;
+    // width: calc(85% - 2px);
+    overflow: auto;
+    padding-top: @padding-xlarge;
+    padding-left: @padding-normal;
+
+    h1 {
+        font-style: italic;
+    }
+}
+
+footer {
+    clear: left;    // http://de.selfhtml.org/css/eigenschaften/positionierung.htm#clear
+    padding: @padding-large;
+}
+
+img {
+    border: @noBorder;
+}
+
+.s-toolbar {
+    height: @header-height;
+    //border: @noBorder;
+}
+
+.s-menu {
+    height: @nav-height;
+}
+
+// Zebrastil
+.ui-datatable-odd {
+    background: none repeat scroll 0 0 @background-odd;
+}
+//.ui-datatable-even {
+//    background: none repeat scroll 0 0 @background-even;
+//}
+
+// Mouseover (und Mouseout) in Tabellen
+.ui-datatable tr.ui-datatable-even:hover, .ui-datatable tr.ui-datatable-odd:hover {
+    background: @background-hover;
+}
+
+.s-grid-noborder tr, .s-grid-noborder td {
+    // Einstellung aus .ui-panelgrid und .ui-panelgrid-cell aus PrimeFaces ueberschreiben
+    border: @noBorder !important;
+    //border-width: 0 !important;
+}
+
+.s-text-only {
+    padding-top: @padding-xlarge;
+}

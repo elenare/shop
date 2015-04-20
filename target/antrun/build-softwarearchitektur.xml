@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="softwarearchitektur"  >
+<target name="softwarearchitektur" description="Verzeichnisse fuer Softwarearchitektur erstellen">
+  <mkdir dir="src/main/webapp/contracts/shop/js/1_0"/>
+  <mkdir dir="src/main/webapp/artikelverwaltung"/>
+  <mkdir dir="src/main/webapp/bestellverwaltung"/>
+  <mkdir dir="src/main/webapp/kundenverwaltung"/>
+  <mkdir dir="src/main/webapp/util"/>
+  <mkdir dir="src/main/webapp/app"/>
+  <mkdir dir="/Users/chuzzla/git/shop/src/main/resources/less"/>
+  <mkdir dir="target/css"/>
+  <mkdir dir="target/css-min"/>
+  <mkdir dir="/Users/chuzzla/git/shop/src/main/resources/less/primefaces"/>
+  <mkdir dir="target/css-primefaces"/>
+  <mkdir dir="target/css-primefaces-min"/>
+  <mkdir dir="target/babel/src/main/webapp/contracts/shop/js/1_0"/>
+  <mkdir dir="target/babel/src/main/webapp/js"/>
+</target>
+</project>

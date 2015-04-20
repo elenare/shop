@@ -1,0 +1,89 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgKv['upload.title']}"/>
+        
+            <ui:define name="main">
+                <p:fieldset id="suchePanel" legend="#{msgKv['upload.heading']}">
+                    <!-- JSF 2.2 statt PrimeFaces
+                    <form jsf:id="uploadForm" enctype="multipart/form-data" jsf:prependId="false">
+                    -->
+
+                    <form jsf:id="uploadForm" jsf:prependId="false">
+                        <p:panelGrid id="uploadFormGrid" styleClass="s-grid-noborder">
+                            <p:row id="loginnameRow">
+                                <p:column id="loginnameLabelCol">
+                                    <p:outputLabel id="loginLabel" for="loginname" value="#{msgKv['upload.loginname.prompt']}"/>
+                                </p:column>
+                                <p:column id="loginnameCol">
+                                    <p:inputText id="loginname" pt:autofocus="true" value="#{fileUploadKunde.loginname}"/>
+                                    <p:messages id="loginnameMessages" for="loginname"/>
+                                </p:column>
+                            </p:row>
+
+                            <p:row id="fileUploadRow">
+                                <p:column id="fileUploadColumn" colspan="2">
+                                    <span jsf:id="fileUploadGroup">
+                                        <!-- Verwendung von Apache Commons FileUpload und https://github.com/blueimp/jQuery-File-Upload -->
+                                        <p:fileUpload id="datei" fileUploadListener="#{fileUploadKunde.uploadListener}"
+                                                      fileLimit="1" sizeLimit="#{fileHelper.sizeLimit}"
+                                                      allowTypes="#{fileHelper.extensionen}" auto="false"
+                                                      label="#{msgKv['upload.datei.label']}"
+                                                      uploadLabel="#{msgKv['upload.datei.upload']}"
+                                                      cancelLabel="#{msgKv['upload.datei.cancel']}"
+                                                      invalidFileMessage="#{msgKv['upload.datei.falscheExtension']}"
+                                                      invalidSizeMessage="#{msgKv['upload.datei.zugross']}"
+                                                      fileLimitLabel="#{msgKv['upload.datei.limit']}">
+                                            <!-- 500 Millisekunden fuer Polling -->
+                                            <p:progressBar id="progressBar" intervall="500"/>
+                                        </p:fileUpload>
+                                        <p:messages id="dateiMessages" for="datei"/>
+
+                                        <!-- JSF 2.2 statt p:fileUpload zzgl. javax.servlet.http.Part fuer das Attribut file
+                                        <input id="datei" type="file" jsf:value="#{fileUploadKunde.file}"/>
+                                        -->
+                                    </span>
+                                </p:column>
+                            </p:row>
+
+                            <p:row id="footerRow">
+                                <p:column id="okColumn">
+                                    <p:commandButton id="uploadSubmit" action="#{fileUploadKunde.upload}" value="#{msgKv['upload.submit']}"
+                                                     icon="fa fa-upload" ajax="false"/>
+                                </p:column>
+                                <p:column id="resetColumn">
+                                    <p:commandButton id="uploadReset" action="#{fileUploadKunde.resetUpload}" value="#{msgKv['upload.reset']}"
+                                                     icon="ui-icon-cancel" update="loginname datei" process="@this">
+                                        <p:resetInput target="uploadFormGrid"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </form>
+                </p:fieldset>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

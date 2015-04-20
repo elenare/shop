@@ -1,0 +1,95 @@
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="#{locale}">
+
+    <f:view locale="#{locale}" transient="#{empty transientView ? 'false' : transientView}">
+        <f:metadata>
+            <ui:insert name="metadata"/>
+        </f:metadata>
+        
+        <head jsf:id="head">
+            <!-- http://de.selfhtml.org/html/kopfdaten/meta.htm -->
+            <!-- http://wiki.selfhtml.org/wiki/HTML/Kopfdaten/meta -->
+            <!-- http://wiki.whatwg.org/wiki/MetaExtensions -->
+            <!-- http-equiv = "HTTP equivalent", d.h. in der HTML-Datei setzen statt im Webserver -->
+            <meta charset="utf-8"/>
+            
+            <!-- Viewport ist der Anzeigebereich im Fenster der Anwendung, der fuer die Darstellung tatsaechlich zur Verfuegung steht. -->
+            <!-- Bei mobilen Geraeten ist der Viewport oft auf eine Breite von 980 Pixeln eingestellt. -->
+            <!-- Deshalb ist eine Website zwar komplett zu sehen, aber die Inhalte sind sehr klein und Schriften nicht lesbar. -->
+            <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1"/>
+            
+            <!-- Bei IE erfolgt das Rendering in der aktuellsten Version des IE, d.h. kein Kompatibilitaetsmodus -->
+            <!-- http://msdn.microsoft.com/en-us/library/cc288325%28v=vs.85%29.aspx -->
+            <!-- IE=Edge,chrome=1 unterstuetzt das Plugin ChromeFrame, das seit Jan. 2014 nicht mehr weiterentwickelt wird -->
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+            
+            <base href="#{request.contextPath}"/>
+            <title>#{empty pageTitle ? 'Webshop' : pageTitle}</title>
+
+            <link jsf:name="shop.min.css" jsf:library="css" rel="stylesheet" type="text/css"/>
+
+            <link jsf:name="favicon.ico" jsf:library="img" rel="shortcut icon" type="image/x-icon"/>
+            <!-- iPhone: Webclip fuer den Home Screen -->
+            <link jsf:name="favicon.png" jsf:library="img" rel="apple-touch-icon"/>
+            <meta name="author" content="J&#252;rgen Zimmermann"/>
+            <meta name="keywords" content="Software Engineering,Java EE,CDI,JAX-RS,JSON,JAXB,JPA,Bean Validation,Common Annotations,Interceptor,EJB,JAX-WS,JavaMail,JSF,EL,PrimeFaces"/>
+        </head>
+        
+        <body jsf:id="body">
+            <header>
+                <ui:insert name="header">
+                    <ui:include src="header.xhtml"/>
+                </ui:insert>
+            </header>
+
+            <nav>   <!-- role="navigation" -->
+                <ui:insert name="nav">
+                    <ui:include src="nav.xhtml"/>
+                </ui:insert>
+            </nav>
+        
+            <main>   <!-- default ARIA-Attribut: role="main" -->
+                <ui:insert name="main"/>
+            </main>
+        
+            <aside>
+                <ui:insert name="aside"/>
+            </aside>
+
+            <footer>
+                <ui:insert name="footer">
+                    <ui:include src="footer.xhtml"/>
+                </ui:insert>
+            </footer>
+            
+            <script type="text/javascript" jsf:name="shop.min.js" jsf:library="js"/>
+            
+            <!-- <Strg><Shift>d fuer Debugging: Component Tree und Scoped (JSF) Variables -->
+            <ui:debug rendered="#{facesContext.application.projectStage eq 'Development'}"/>
+
+            <!-- fuer client-seitige Interpretation von LESS-Dateien (statt serverseitig Voruebersetzung)
+            <script type="text/javascript" jsf:name="less.min.js" jsf:library="js"/>
+            -->
+        </body>
+    </f:view>
+</html>

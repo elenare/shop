@@ -1,0 +1,82 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:s="http://shop.de">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="transientView" value="true"/>
+            <ui:param name="pageTitle" value="#{msgBv['viewBestellung.title']}"/>
+        
+            <ui:define name="main">
+                <p:fieldset id="bestellungMainPanel" legend="#{msgBv['viewBestellung.heading']} #{bestellung.id}">
+                    <section id="bestellungSection">
+                        <p:panelGrid id="bestellungGrid" columns="2">
+                            <p:outputLabel id="idLabel" value="#{msgBv['viewBestellung.id']}"/>
+                            <h:outputText id="id" value="#{bestellung.id}"/>
+
+                            <p:outputLabel id="kundeIdLabel" value="#{msgBv['viewBestellung.kundeId']}"/>
+                            <h:outputText id="kundeId" value="#{bestellung.kunde.id}"/>
+
+                            <p:outputLabel id="erzeugtLabel" value="#{msgBv['viewBestellung.zeitstempel']}"/>
+                            <h:outputText id="erzeugt" value="#{bestellung.erzeugt}">
+                                <f:convertDateTime type="date" dateStyle="full"/>
+                            </h:outputText>
+
+                            <p:outputLabel id="gesamtbetragLabel" value="#{msgBv['viewBestellung.gesamtbetrag']}"/>
+                            <h:outputText id="gesamtbetrag" value="#{bestellung.gesamtbetrag}">
+                                <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:panelGrid>
+                    </section>
+
+                    <p:spacer id="abstand" height="20"/>
+
+                    <section id="positionenSection">
+                        <p:dataTable id="positionenTabelle" value="#{s:asList(bestellung.bestellpositionen)}" var="pos">
+                            <f:facet id="positionenHeader" name="header">
+                                #{msgBv['viewBestellung.positionen']}
+                            </f:facet>
+
+                            <p:column id="artikelIdSpalte" headerText="#{msgBv['viewBestellung.artikel.id']}">
+                                #{pos.artikel.id}
+                            </p:column>
+
+                            <p:column id="bezeichnungSpalte" headerText="#{msgBv['viewBestellung.artikel.bezeichnung']}">
+                                #{pos.artikel.bezeichnung}
+                            </p:column>
+
+                            <p:column id="anzahlSpalte" headerText="#{msgBv['viewBestellung.artikel.anzahl']}">
+                                #{pos.anzahl}
+                            </p:column>
+
+                            <p:column id="preisSpalte" headerText="#{msgBv['viewBestellung.artikel.preis']}">
+                                <h:outputText id="preis" value="#{pos.artikel.preis}">
+                                    <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                                </h:outputText>
+                            </p:column>
+                        </p:dataTable>
+                    </section>
+                </p:fieldset>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

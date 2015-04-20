@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<facelet-taglib xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibary_2_2.xsd"
+                version="2.2">
+
+	<namespace>http://shop.de</namespace>
+	
+	<function>
+		<function-name>aktuellesDatum</function-name>
+		<function-class>de.shop.util.jsf.Functions</function-class>
+		<function-signature>
+			java.util.Date aktuellesDatum()
+		</function-signature>
+	</function>
+	
+	<function>
+		<function-name>timeZone</function-name>
+		<function-class>java.util.TimeZone</function-class>
+		<function-signature>
+			java.util.TimeZone getTimeZone(java.lang.String)
+		</function-signature>
+	</function>
+
+	<function>
+		<function-name>asList</function-name>
+		<function-class>de.shop.util.jsf.Functions</function-class>
+		<function-signature>
+			java.util.List asList(java.util.Collection)
+		</function-signature>
+	</function>
+</facelet-taglib>

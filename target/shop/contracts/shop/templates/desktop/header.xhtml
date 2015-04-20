@@ -1,0 +1,137 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:jsf="http://xmlns.jcp.org/jsf"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <p:toolbar id="headerToolbar" styleClass="s-toolbar">
+        <p:toolbarGroup id="homeGroup" align="left">
+            <a jsf:id="homeLink" jsf:outcome="/p/index?cid=#{javax.enterprise.context.conversation.id}">
+                <img jsf:id="homeLogo" jsf:name="hs-logo.gif" jsf:library="img" alt="#{msg['header.logo.alt']}" height="60" width="337"/>
+            </a>
+        </p:toolbarGroup>
+        
+        <p:toolbarGroup id="headerGroup" align="right">
+            <form jsf:id="headerForm" jsf:prependId="false">
+                <p:menubar id="headerMenubar">
+                    <!-- fa fa-flag -->
+                    <p:submenu lid="sprache" label="#{msg['header.sprache']}" icon="ui-icon-flag">
+                        <p:menuitem id="englisch"
+                                    value="#{msg['header.sprache.englisch']}"
+                                    actionListener="#{sprache.change('en')}"
+                                    ajax="false"/>
+                        <p:menuitem id="deutsch"
+                                    value="#{msg['header.sprache.deutsch']}"
+                                    actionListener="#{sprache.change('de')}"
+                                    ajax="false"/>
+                    </p:submenu>
+
+                    <!-- fa fa-image -->
+                    <p:submenu id="theme" label="#{msg['header.theme']}" icon="ui-icon-image">
+                        <p:menuitem id="cupertino"
+                                    value="#{msg['header.theme.cupertino']}"
+                                    actionListener="#{theme.change('cupertino')}"
+                                    ajax="false"/>
+                        <p:menuitem id="blitzer"
+                                    value="#{msg['header.theme.blitzer']}"
+                                    actionListener="#{theme.change('blitzer')}"
+                                    ajax="false"/>
+                        <p:menuitem id="lefrog"
+                                    value="#{msg['header.theme.le-frog']}"
+                                    actionListener="#{theme.change('le-frog')}"
+                                    ajax="false"/>
+                        <p:menuitem id="humanity"
+                                    value="#{msg['header.theme.humanity']}"
+                                    actionListener="#{theme.change('humanity')}"
+                                    ajax="false"/>
+                        <p:menuitem id="sunny"
+                                    value="#{msg['header.theme.sunny']}"
+                                    actionListener="#{theme.change('sunny')}"
+                                    ajax="false"/>
+                    </p:submenu>
+
+                    <!-- fa fa-user -->
+                    <p:submenu id="meinKonto" label="#{msg['header.meinKonto']}" icon="ui-icon-person" rendered="#{identity.loggedIn}">
+                        <p:menuitem id="loginInfo"
+                                    value="#{rollenModel.user.firstName} #{rollenModel.user.lastName}"/>
+
+                        <p:separator/>
+
+                        <p:menuitem id="einstellungen"
+                                    value="#{msg['header.einstellungen']}"
+                                    action="#{updateKundeModel.editUser}"
+                                    ajax="false"/>
+
+                        <p:menuitem id="logout"
+                                    value="#{msg['header.logout']}"
+                                    action="#{logoutModel.logout}"
+                                    ajax="false"/>
+                    </p:submenu>
+                    
+                    <!-- fa fa-shopping-cart -->
+                    <p:submenu id="warenkorbHeader" label="#{msg['header.warenkorb']}" icon="ui-icon-cart" rendered="#{not empty warenkorb.positionen}"/>
+                </p:menubar>
+                
+                <p:overlayPanel id="warenkorbOverlay" for="warenkorbHeader" showEvent="mouseover" hideEvent="mouseout">
+                    <p:dataTable id="warenkorbTabelleHeader"
+                                 value="#{warenkorb.positionen.values()}"
+                                 var="position">
+                        <p:column id="artikelIdSpalteHeader" headerText="#{msg['header.warenkorb.artikel.id']}">
+                            #{position.artikel.id}
+                        </p:column>
+
+                        <p:column id="bezeichnungSpalteHeader" headerText="#{msg['header.warenkorb.artikel.bezeichnung']}">
+                            #{position.artikel.bezeichnung}
+                        </p:column>
+
+                        <p:column id="anzahlSpalteHeader" headerText="#{msg['header.warenkorb.anzahl']}">
+                            #{position.anzahl}
+                        </p:column>
+
+                        <p:column id="preisSpalteHeader" headerText="#{msg['header.warenkorb.artikel.preis']}">
+                            <h:outputText id="preisHeader" value="#{position.artikel.preis}">
+                                <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </p:overlayPanel>
+            </form>
+        </p:toolbarGroup>
+     
+        <p:toolbarGroup id="loginKontoGroup" align="right">
+            <form jsf:id="loginFormHeader" jsf:prependId="false" rendered="#{not identity.loggedIn}">
+                <p:panelGrid id="loginGridHeader" columns="3" styleClass="s-grid-noborder">
+                    <p:outputLabel id="loginnameLabelHeader" for="loginnameHeader" value="#{msg['login.loginname']}"/>
+                    <p:inputText id="loginnameHeader" value="#{loginCredentials.userId}" tabindex="1"/>
+                    <p:link id="registrieren" outcome="/p/registrierung/registrierePrivatkunde?cid=#{javax.enterprise.context.conversation.id}"
+                            value="#{msg['header.registrierePrivatkunde']}" tabindex="4"/>
+                            
+                    <p:outputLabel id="passwordLabelHeader" for="passwordHeader" value="#{msg['login.password']}"/>
+                    <p:password id="passwordHeader" value="#{loginCredentials.password}" redisplay="true" tabindex="2"/>
+                    <!-- : vor den IDs beim Attribut update, weil die IDs ausserhalb der form sind -->
+                    <p:commandButton id="loginButtonHeader" actionListener="#{loginModel.login}" value="#{msg['login.submit']}"
+                                     update=":headerToolbar :navForm :footerMsg" tabindex="3"/>
+                </p:panelGrid>
+                <p:message id="fehlermeldungLogin" for="loginnameHeader"/>
+            </form>
+        </p:toolbarGroup>
+    </p:toolbar>
+</ui:composition>

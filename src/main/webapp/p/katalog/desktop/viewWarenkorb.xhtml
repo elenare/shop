@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:jsf="http://xmlns.jcp.org/jsf"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+<!--
+ * Copyright (C) 2013 Juergen Zimmermann, Hochschule Karlsruhe
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+    <body>
+        <ui:composition template="/templates/desktop/shop.xhtml">
+            <ui:param name="pageTitle" value="#{msgBv['viewWarenkorb.title']}"/>
+        
+            <ui:define name="main">
+                <c:if test="#{not empty warenkorb.positionen}">
+                    <form jsf:id="warenkorbForm" jsf:prependId="false">
+                        <p:dataTable id="warenkorbTabelle"
+                                     value="#{warenkorb.positionen.values()}"
+                                     var="position"
+                                     emptyMessage="#{msgBv['viewWarenkorb.empty']}">
+                            <f:facet name="header">
+                                #{msgBv['viewWarenkorb.heading']}
+                            </f:facet>
+                            
+                            <p:column id="artikelIdSpalte" headerText="#{msgBv['viewWarenkorb.artikel.id']}">
+                                #{position.artikel.id}
+                            </p:column>
+                            
+                            <p:column id="bezeichnungSpalte" headerText="#{msgBv['viewWarenkorb.artikel.bezeichnung']}">
+                                #{position.artikel.bezeichnung}
+                            </p:column>
+                
+                            <p:column id="anzahlSpalte" headerText="#{msgBv['viewWarenkorb.anzahl']}">
+                                <p:spinner id="anzahl"
+                                           value="#{position.anzahl}"
+                                           min="0"
+                                           max="99"
+                                           size="2"/>
+                            </p:column>
+                            
+                            <p:column id="preisSpalte" headerText="#{msgBv['viewWarenkorb.artikel.preis']}">
+                                <h:outputText id="preis" value="#{position.artikel.preis}">
+                                    <f:convertNumber type="currency" currencyCode="EUR" maxFractionDigits="2" minFractionDigits="2"/>
+                                </h:outputText>
+                            </p:column>
+                
+                            <p:column id="deleteButton">
+                                <p:commandButton id="deleteLink" icon="fa fa-trash-o" onclick="PF('cd').show()" alt="#{msgBv['viewWarenkorb.deleteButtonAlt']}"/>
+                                <p:confirmDialog id="confirmDialog" message="#{msgBv['viewWarenkorb.deletePositionBestaetigung']}"
+                                                 header="#{msgBv['viewWarenkorb.deletePositionAlert']}"
+                                                 severity="alert"
+                                                 widgetVar="cd">
+                                    <p:commandButton id="confirmDeleteButton" action="#{warenkorb.remove(position.artikel.id)}"
+                                                     value="#{msgBv['viewWarenkorb.deleteButtonAlt']}"
+                                                     onclick="PF('cd').hide()"
+                                                     icon="fa fa-trash"/>
+                                    <p:commandButton id="cancelDeleteButton"
+                                                     value="#{msgBv['viewWarenkorb.deleteCancel']}"
+                                                     onclick="PF('cd').hide()"
+                                                     icon="ui-icon-cancel"/>
+                                </p:confirmDialog>
+                            </p:column>
+
+                            <f:facet name="footer">
+                                <p:commandButton id="updateAnzahlButton" action="/p/katalog/listArtikel?init=true"
+                                                 value="#{msgBv['viewWarenkorb.update']}" icon="fa fa-edit" ajax="false"/>
+                                #{' '}
+                                <p:commandButton id="resetButton" value="#{msgBv['viewWarenkorb.reset']}"
+                                                 update="warenkorbTabelle" process="@this" icon="ui-icon-cancel">
+                                    <p:resetInput target="warenkorbTabelle"/>
+                                </p:commandButton>
+                                #{' '}
+                                <p:commandButton id="zurKasseButton" action="/p/bestellverwaltung/confirmBestellung?redirect=true"
+                                                 value="#{msgBv['viewWarenkorb.zurKasse']}" icon="fa fa-calculator" ajax="false"/>
+                                <br/>
+                                <p:message id="bestellenButtonFehlermeldung" for="zurKasseButton" severity="error" rendered="#{not empty identity}"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </form>
+                </c:if>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
